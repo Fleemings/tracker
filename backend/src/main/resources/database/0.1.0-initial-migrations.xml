@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- User -->
+    <changeSet id="1" author="milena_fleming">
+        <createTable tableName="user">
+            <column name="user_id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(150)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="TEXT">
+                <constraints unique="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Motorcycle -->
+    <changeSet id="2" author="milena_fleming">
+        <createTable tableName="motorcycle">
+            <column name="motorcycle_id" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="brand" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="model" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="year" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_motorcycle_user"
+                             references="user(user_id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Workshop -->
+    <changeSet id="3" author="milena_fleming">
+        <createTable tableName="workshop">
+            <column name="workshop_id" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contact_info" type="TEXT">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- maintenance -->
+    <changeSet id="4" author="milena_fleming">
+        <createTable tableName="maintenance">
+            <column name="maintenance_id" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="motorcycle_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_maintenance_motorcycle"
+                             references="Motorcycle(motorcycle_id)"/>
+            </column>
+            <column name="service_date" type="TIMESTAMPTZ">
+                <constraints nullable="false"/>
+            </column>
+            <column name="odometer_reading" type="INT">
+                <constraints nullable="true"/>
+            </column>
+            <column name="total_cost" type="DECIMAL(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="part_replaced" type="boolean">
+                <constraints nullable="true"/>
+            </column>
+            <column name="next_service_date" type="TIMESTAMPTZ"/>
+            <column name="comments" type="TEXT"/>
+            <column name="workshop_id" type="INT">
+                <constraints nullable="true" foreignKeyName="fk_maintenance_workshop"
+                             references="workshop(workshop_id)"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Service_Performed -->
+    <changeSet id="5" author="milena_fleming">
+        <createTable tableName="service_performed">
+            <column name="service_performed_id" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="maintenance_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_service_performed_maintenance"
+                             references="maintenance(maintenance_id)"/>
+            </column>
+            <column name="service_type" type="VARCHAR(100)"/>
+            <column name="service_description" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Parts_Replaced -->
+    <changeSet id="6" author="milena_fleming">
+        <createTable tableName="parts_replaced">
+            <column name="part_id" type="INT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="maintenance_id" type="INT">
+                <constraints nullable="false" foreignKeyName="fk_parts_replaced_maintenance"
+                             references="maintenance(maintenance_id)"/>
+            </column>
+            <column name="part_name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="part_cost" type="DECIMAL(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
