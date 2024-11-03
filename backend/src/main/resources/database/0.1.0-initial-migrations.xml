@@ -26,7 +26,7 @@
     <!-- Motorcycle -->
     <changeSet id="2" author="milena_fleming">
         <createTable tableName="motorcycle">
-            <column name="motorcycle_id" type="INT">
+            <column name="motorcycle_id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="brand" type="VARCHAR(100)">
@@ -38,17 +38,28 @@
             <column name="year" type="INT">
                 <constraints nullable="false"/>
             </column>
-            <column name="user_id" type="UUID">
-                <constraints nullable="false" foreignKeyName="fk_motorcycle_user"
-                             references="user(user_id)"/>
-            </column>
         </createTable>
     </changeSet>
 
-    <!-- Workshop -->
+    <!-- UserMotorcycle (associação entre User e Motorcycle) -->
     <changeSet id="3" author="milena_fleming">
+        <createTable tableName="user_motorcycle">
+            <column name="user_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_user_motorcycle_user"
+                             references="user(user_id)"/>
+            </column>
+            <column name="motorcycle_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_user_motorcycle_motorcycle"
+                             references="motorcycle(motorcycle_id)"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="user_motorcycle" columnNames="user_id, motorcycle_id" constraintName="pk_user_motorcycle"/>
+    </changeSet>
+
+    <!-- Workshop -->
+    <changeSet id="4" author="milena_fleming">
         <createTable tableName="workshop">
-            <column name="workshop_id" type="INT">
+            <column name="workshop_id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="name" type="VARCHAR(100)">
@@ -60,15 +71,19 @@
         </createTable>
     </changeSet>
 
-    <!-- maintenance -->
-    <changeSet id="4" author="milena_fleming">
+    <!-- Maintenance -->
+    <changeSet id="5" author="milena_fleming">
         <createTable tableName="maintenance">
-            <column name="maintenance_id" type="INT">
+            <column name="maintenance_id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="motorcycle_id" type="INT">
+            <column name="motorcycle_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_maintenance_motorcycle"
-                             references="Motorcycle(motorcycle_id)"/>
+                             references="motorcycle(motorcycle_id)"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_maintenance_user"
+                             references="user(user_id)"/>
             </column>
             <column name="service_date" type="TIMESTAMPTZ">
                 <constraints nullable="false"/>
@@ -79,40 +94,51 @@
             <column name="total_cost" type="DECIMAL(10, 2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="part_replaced" type="boolean">
-                <constraints nullable="true"/>
-            </column>
+            <column name="part_replaced" type="BOOLEAN"/>
             <column name="next_service_date" type="TIMESTAMPTZ"/>
             <column name="comments" type="TEXT"/>
-            <column name="workshop_id" type="INT">
+            <column name="workshop_id" type="UUID">
                 <constraints nullable="true" foreignKeyName="fk_maintenance_workshop"
                              references="workshop(workshop_id)"/>
             </column>
         </createTable>
     </changeSet>
 
-    <!-- Service_Performed -->
-    <changeSet id="5" author="milena_fleming">
-        <createTable tableName="service_performed">
-            <column name="service_performed_id" type="INT">
+    <!-- ServiceType -->
+    <changeSet id="6" author="milena_fleming">
+        <createTable tableName="service_type">
+            <column name="service_type_id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="maintenance_id" type="INT">
-                <constraints nullable="false" foreignKeyName="fk_service_performed_maintenance"
-                             references="maintenance(maintenance_id)"/>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
             </column>
-            <column name="service_type" type="VARCHAR(100)"/>
-            <column name="service_description" type="TEXT"/>
+            <column name="description" type="TEXT"/>
         </createTable>
     </changeSet>
 
+    <!-- MaintenanceService (associação entre Maintenance e ServiceType) -->
+    <changeSet id="7" author="milena_fleming">
+        <createTable tableName="maintenance_service">
+            <column name="maintenance_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_maintenance_service_maintenance"
+                             references="maintenance(maintenance_id)"/>
+            </column>
+            <column name="service_type_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_maintenance_service_service"
+                             references="service_type(service_type_id)"/>
+            </column>
+        </createTable>
+        <addPrimaryKey tableName="maintenance_service" columnNames="maintenance_id, service_type_id" constraintName="pk_maintenance_service"/>
+    </changeSet>
+
     <!-- Parts_Replaced -->
-    <changeSet id="6" author="milena_fleming">
+    <changeSet id="8" author="milena_fleming">
         <createTable tableName="parts_replaced">
-            <column name="part_id" type="INT">
+            <column name="part_id" type="UUID">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="maintenance_id" type="INT">
+            <column name="maintenance_id" type="UUID">
                 <constraints nullable="false" foreignKeyName="fk_parts_replaced_maintenance"
                              references="maintenance(maintenance_id)"/>
             </column>
