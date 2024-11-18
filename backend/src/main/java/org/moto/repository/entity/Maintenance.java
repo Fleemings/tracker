@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -36,7 +37,7 @@ public class Maintenance {
     private Integer odometerReading;
 
     @Column(name = "total_cost", nullable = false)
-    private String totalCost;
+    private BigDecimal totalCost;
 
     @Column(name = "part_replaced")
     private Boolean partReplaced;

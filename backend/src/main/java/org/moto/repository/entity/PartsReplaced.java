@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +36,6 @@ public class PartsReplaced {
     private String partName;
 
     @Column(name = "part_cost", nullable = false)
-    private String partCost;
+    private BigDecimal partCost;
 }
 
